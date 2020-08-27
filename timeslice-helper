@@ -63,6 +63,9 @@ def slice(images):
 
 def check_files(images):
   width, height = images[0].size
+  if len(images)>width:
+    print("To many images. Each slice would be smaller than 1px.")
+    sys.exit("Please try again.")
   print("The output image will be "+str(width)+"x"+str(height))
   for x in images:
     w, h =x.size
