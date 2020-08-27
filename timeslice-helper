@@ -1,0 +1,97 @@
+from PIL import Image
+import glob
+import sys
+
+# Open an Image
+def open_image(path):
+  newImage = Image.open(path)
+  return newImage
+
+# Save Image
+def save_image(image, path):
+  image.save(path, 'png')
+
+
+# Create a new image with the given size
+def create_image(i, j):
+  image = Image.new("RGB", (i, j), "white")
+  return image
+
+
+# Get the pixel from the given image
+def get_pixel(image, i, j):
+  # Inside image bounds?
+  width, height = image.size
+  if i > width or j > height:
+    return None
+
+  # Get Pixel
+  pixel = image.getpixel((i, j))
+  return pixel
+
+# Create a Grayscale version of the image
+def slice(images):
+  # Get size
+  width, height = images[0].size
+
+  #calculate slices
+  s = round(width/len(images))
+  slices = []
+  for x in images:
+    slices.append(s)
+  if (s*len(images))<width:
+    slices[len(images)-1] = slices[len(images)-1]+(width-(s*len(images)))
+    print("The last slice will be "+str(width-(s*len(images)))+" bigger.")
+
+  # Create new Image and a Pixel Map
+  new = create_image(width, height)
+  pixels = new.load()
+
+  current = 0
+  #column
+  c = 0
+  for row in slices:
+    print("Slicing image "+str(c+1))
+    for i in range(current, current+row):
+      for j in range(height):
+        # Set Pixel in new image
+        pixels[i, j] = get_pixel(images[c], i, j)
+    c = c+1
+    current = current+row
+  # Return new image
+  return new
+
+def check_files(images):
+  width, height = images[0].size
+  print("The output image will be "+str(width)+"x"+str(height))
+  for x in images:
+    w, h =x.size
+    if w != width or h != height:
+      return False
+  return True
+
+# Main
+if __name__ == "__main__":
+  files = []
+  images = []
+  # Load Image (JPEG/JPG needs libjpeg to load)
+  original = open_image('import/5.jpg')
+
+  for file_name in glob.iglob('import/*.jpg', recursive=True):
+    files.append(file_name)
+    images.append(open_image(file_name))
+  #print(files)
+
+  if check_files(images):
+    print("All images have the same size.")
+  else:
+    print("Not all images have the same size.")
+    sys.exit("Please try again")
+
+  print("Processing "+str(len(images))+" images.")
+
+  #Slice and save
+  new = slice(images)
+  print("Saving image...")
+  save_image(new, 'test.jpg')
+
