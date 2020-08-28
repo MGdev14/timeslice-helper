@@ -1,6 +1,7 @@
 from PIL import Image
 import glob
 import sys
+import os
 
 # Open an Image
 def open_image(path):
@@ -36,12 +37,13 @@ def slice(images):
 
   #calculate slices
   s = round(width/len(images))
+  print("Each slice will be "+str(s)+"pixel wide.")
   slices = []
   for x in images:
     slices.append(s)
   if (s*len(images))<width:
     slices[len(images)-1] = slices[len(images)-1]+(width-(s*len(images)))
-    print("The last slice will be "+str(width-(s*len(images)))+" bigger.")
+    print("The last slice will be "+str(width-(s*len(images)))+"pixel bigger.")
 
   # Create new Image and a Pixel Map
   new = create_image(width, height)
@@ -73,17 +75,21 @@ def check_files(images):
       return False
   return True
 
-# Main
-if __name__ == "__main__":
+def get_dir():
+  dir = []
+
+def process_dir(path):
   files = []
   images = []
   # Load Image (JPEG/JPG needs libjpeg to load)
-  original = open_image('import/5.jpg')
-
-  for file_name in glob.iglob('import/*.jpg', recursive=True):
+  for file_name in glob.iglob(path+'/*.jpg', recursive=True):
     files.append(file_name)
     images.append(open_image(file_name))
-  #print(files)
+
+  # check if folder contains no images
+  if len(files) < 1:
+    print("This folder contains no images.")
+    sys.exit("Please try again.")
 
   if check_files(images):
     print("All images have the same size.")
@@ -91,10 +97,20 @@ if __name__ == "__main__":
     print("Not all images have the same size.")
     sys.exit("Please try again")
 
-  print("Processing "+str(len(images))+" images.")
+  print("Processing " + str(len(images)) + " images.")
 
-  #Slice and save
+  # Slice and save
   new = slice(images)
   print("Saving image...")
-  save_image(new, 'test.jpg')
+  save_image(new, path+'.jpg')
+  print(path+".jpg is ready.")
 
+# Main
+if __name__ == "__main__":
+
+  #Scan folders recursively
+  rec = False
+  if rec:
+    get_dir()
+  else:
+    process_dir("import")
