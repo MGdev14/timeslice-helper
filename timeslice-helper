@@ -29,7 +29,6 @@ def get_pixel(image, i, j):
   pixel = image.getpixel((i, j))
   return pixel
 
-# Create a Grayscale version of the image
 def slice(images):
   # Get size
   width, height = images[0].size
@@ -78,12 +77,12 @@ if __name__ == "__main__":
   files = []
   images = []
   # Load Image (JPEG/JPG needs libjpeg to load)
-  original = open_image('import/5.jpg')
+
 
   for file_name in glob.iglob('import/*.jpg', recursive=True):
     files.append(file_name)
     images.append(open_image(file_name))
-  #print(files)
+
 
   if check_files(images):
     print("All images have the same size.")
