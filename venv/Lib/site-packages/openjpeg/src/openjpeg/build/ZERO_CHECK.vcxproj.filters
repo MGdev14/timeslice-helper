@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\runneradmin\AppData\Local\Temp\pip-req-build-gw6x9iuz\openjpeg\src\openjpeg\build\CMakeFiles\995c1198be3e42d84a83b8d323bd2f95\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{024DC5EB-C4CE-3FCD-8D7E-454E8B3359D5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
