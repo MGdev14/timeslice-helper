@@ -133,4 +133,5 @@ if __name__ == "__main__":
     if rec:
         get_dir()
     else:
-        process_dir("import")
+        process_dir("import\gap")
+
