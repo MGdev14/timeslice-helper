@@ -34,7 +34,6 @@ def get_pixel(image, i, j):
     return pixel
 
 
-# Create a Grayscale version of the image
 def slice(images):
     # Get size
     width, height = images[0].size
@@ -134,4 +133,5 @@ if __name__ == "__main__":
         get_dir()
     else:
         process_dir("import\gap")
+
 
