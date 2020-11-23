@@ -1,7 +1,8 @@
-from PIL import Image
 import glob
-import sys
 import os
+import sys
+
+from PIL import Image
 
 
 # Open an Image
@@ -83,24 +84,23 @@ def check_files(images):
 def get_dir(path):
     dir = []
     for currentpath, folders, files in os.walk(path):
-      for folder in folders:
-        print(os.path.join(currentpath, folder))
-        dir.append(os.path.join(currentpath, folder))
+        for folder in folders:
+            print(os.path.join(currentpath, folder))
+            dir.append(os.path.join(currentpath, folder))
 
     for d in dir:
         print("Processing " + str(d))
-        process_dir(d)
+        process_dir(d, "")
 
 
-def process_dir(d):
+def process_dir(d, name):
     files = []
     images = []
 
     # Load Image (JPEG/JPG needs libjpeg to load)
-    for file_name in glob.iglob(d+ '/*.jpg', recursive=True):
+    for file_name in sorted(glob.iglob(d + '/*.jpg', recursive=True)):
         files.append(file_name)
         images.append(open_image(file_name))
-    #print(os.path.join(d,"/*.jpg"))
     # check if folder contains no images
     if not files:
         print("This folder contains no images.")
@@ -117,9 +117,13 @@ def process_dir(d):
     # Slice and save
     new = slice(images)
     print("Saving image...")
-    name = str(d).replace("/",'_')
-    p = "output/" + name.replace("\\",'_')
-    save_image(new,p + '.jpg')
+    filename = ""
+    if name == "":
+        filename = str(d).replace("/", '_')
+    else:
+        filename = name.replace("/", '_')
+    p = "output/" + filename.replace("\\", '_')
+    save_image(new, p + '.jpg')
     print(p + ".jpg is ready.")
 
 
@@ -128,14 +132,15 @@ if __name__ == "__main__":
 
     path = sys.argv[1]
     path = os.path.abspath(path)
-    if !os.path.isdir(Path):
-        print("Path is not a directory or does not exist.")
-        return
-    # Scan folders recursively
-    rec = False
-    if rec:
-        get_dir()
+    if not os.path.isdir(path):
+        sys.exit("Path is not a directory or does not exist.")
+    rec = sys.argv[2]
+    name = ""
+    #
+    if len(sys.argv) > 3:
+        name = sys.argv[3]
+    if rec == "True":
+        get_dir(path)
     else:
-        process_dir("import/skyline/")
-
+        process_dir(path, name)
 
