@@ -6,7 +6,7 @@ from PIL import Image
 
 
 # Open an Image
-def open_image(path):
+def open_image(path) -> object:
     newImage = Image.open(path)
     return newImage
 
@@ -35,19 +35,19 @@ def get_pixel(image, i, j):
     return pixel
 
 
-def slice(images):
+def slice(files):
     # Get size
-    width, height = images[0].size
+    width, height = open_image(files[0]).size
 
     # calculate slices
-    s = round(width / len(images))
+    s = int((width / len(files)))
     print("Each slice will be " + str(s) + "pixel wide.")
     slices = []
-    for x in images:
+    for x in files:
         slices.append(s)
-    if (s * len(images)) < width:
-        slices[len(images) - 1] = slices[len(images) - 1] + (width - (s * len(images)))
-        print("The last slice will be " + str(width - (s * len(images))) + "pixel bigger.")
+    if (s * len(files)) < width:
+        slices[len(files) - 1] = slices[len(files) - 1] + (width - (s * len(files)))
+        print("The last slice will be " + str(width - (s * len(files))) + "pixel bigger.")
 
     # Create new Image and a Pixel Map
     new = create_image(width, height)
@@ -57,25 +57,27 @@ def slice(images):
     # column
     c = 0
     for row in slices:
+        pic = open_image(files[c])
         print("Slicing image " + str(c + 1))
         for i in range(current, current + row):
             for j in range(height):
+                #print(str(c+1) + " - " + str(i) + " - " + str(j))
                 # Set Pixel in new image
-                pixels[i, j] = get_pixel(images[c], i, j)
+                pixels[i, j] = get_pixel(pic, i, j)
         c = c + 1
         current = current + row
     # Return new image
     return new
 
 
-def check_files(images):
-    width, height = images[0].size
-    if len(images) > width:
+def check_files(files):
+    width, height = open_image(files[0]).size
+    if len(files) > width:
         print("To many images. Each slice would be smaller than 1px.")
         return
     print("The output image will be " + str(width) + "x" + str(height))
-    for x in images:
-        w, h = x.size
+    for x in files:
+        w, h = open_image(x).size
         if w != width or h != height:
             return False
     return True
@@ -100,22 +102,21 @@ def process_dir(d, name):
     # Load Image (JPEG/JPG needs libjpeg to load)
     for file_name in sorted(glob.iglob(d + '/*.jpg', recursive=True)):
         files.append(file_name)
-        images.append(open_image(file_name))
     # check if folder contains no images
     if not files:
         print("This folder contains no images.")
         return
 
-    if check_files(images):
+    if check_files(files):
         print("All images have the same size.")
     else:
         print("Not all images have the same size.")
         return
 
-    print("Processing " + str(len(images)) + " images.")
+    print("Processing " + str(len(files)) + " images.")
 
     # Slice and save
-    new = slice(images)
+    new = slice(files)
     print("Saving image...")
     filename = ""
     if name == "":
@@ -123,8 +124,8 @@ def process_dir(d, name):
     else:
         filename = name.replace("/", '_')
     p = "output/" + filename.replace("\\", '_')
-    save_image(new, p + '.jpg')
-    print(p + ".jpg is ready.")
+    save_image(new, p + '.png')
+    print(p + ".png is ready.")
 
 
 # Main
