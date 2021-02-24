@@ -46,8 +46,16 @@ def slice(files):
     for x in files:
         slices.append(s)
     if (s * len(files)) < width:
-        slices[len(files) - 1] = slices[len(files) - 1] + (width - (s * len(files)))
-        print("The last slice will be " + str(width - (s * len(files))) + "pixel bigger.")
+        print("Distributing lextover columns.")
+        leftover = width - (s * len(files))
+        print(str(leftover))
+        for i in range((len(files) - 1), 0, -1):
+            if leftover > 0:
+                slices[i] = slices[i] + 1
+                leftover = leftover - 1
+                print("Image " + str(i) + " will be 1px bigger.")
+        # slices[len(files) - 1] = slices[len(files) - 1] + (width - (s * len(files)))
+        print("Leftover pixel-columns were distributed evenly among the leftmost slices.")
 
     # Create new Image and a Pixel Map
     new = create_image(width, height)
@@ -58,10 +66,10 @@ def slice(files):
     c = 0
     for row in slices:
         pic = open_image(files[c])
-        print("Slicing image " + str(c + 1))
+        print("Slicing image " + str(c + 1) + " - " + str(slices[c]) + " Pixels wide.")
         for i in range(current, current + row):
             for j in range(height):
-                #print(str(c+1) + " - " + str(i) + " - " + str(j))
+                # print(str(c+1) + " - " + str(i) + " - " + str(j))
                 # Set Pixel in new image
                 pixels[i, j] = get_pixel(pic, i, j)
         c = c + 1
@@ -144,4 +152,3 @@ if __name__ == "__main__":
         get_dir(path)
     else:
         process_dir(path, name)
-
